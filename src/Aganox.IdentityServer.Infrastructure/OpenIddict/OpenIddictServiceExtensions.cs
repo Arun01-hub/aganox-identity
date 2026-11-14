@@ -53,6 +53,7 @@ public static class OpenIddictServiceExtensions
                        .EnableUserInfoEndpointPassthrough()
                        .EnableEndSessionEndpointPassthrough()
                        .EnableStatusCodePagesIntegration();
+
             });
 
         return services;

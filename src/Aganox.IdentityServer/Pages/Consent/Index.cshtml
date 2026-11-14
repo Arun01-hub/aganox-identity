@@ -2,19 +2,43 @@
 @model Aganox.IdentityServer.Pages.Consent.IndexModel
 @{
     ViewData["Title"] = "Authorize application";
+    ViewData["LayoutMode"] = "auth";
 }
 
 <section class="card card--wide" aria-labelledby="consent-heading">
+    <ol class="flow-steps" aria-label="Authorization progress">
+        <li class="flow-steps__item is-done">
+            <span class="flow-steps__num">✓</span>
+            Signed in
+        </li>
+        <li class="flow-steps__sep" aria-hidden="true">→</li>
+        <li class="flow-steps__item is-active">
+            <span class="flow-steps__num">2</span>
+            Review access
+        </li>
+        <li class="flow-steps__sep" aria-hidden="true">→</li>
+        <li class="flow-steps__item">
+            <span class="flow-steps__num">3</span>
+            Return to app
+        </li>
+    </ol>
+
     <div class="card__brand">
         <span class="card__logo" aria-hidden="true">A</span>
-        <h1 id="consent-heading" class="card__title">Authorize @Model.ApplicationName</h1>
+        <h1 id="consent-heading" class="card__title">Allow @Model.ApplicationName?</h1>
     </div>
-    <p class="card__lead">This application is requesting access to your account with the following permissions:</p>
+    <p class="card__lead">This application is requesting permission to access your Aganox account. You can deny access at any time from your administrator.</p>
 
     <ul class="scope-list" aria-label="Requested permissions">
         @foreach (var scope in Model.Scopes)
         {
-            <li class="scope-list__item">@scope</li>
+            <li class="scope-list__item">
+                <span class="scope-list__icon" aria-hidden="true">↗</span>
+                <div>
+                    <div class="scope-list__label">@scope</div>
+                    <div class="scope-list__desc">Granted to @Model.ApplicationName while you use the app</div>
+                </div>
+            </li>
         }
     </ul>
 
@@ -25,8 +49,8 @@
             <input type="hidden" name="@parameter.Key" value="@parameter.Value" />
         }
         <div class="form__actions form__actions--row">
-            <button type="submit" name="submit.Accept" value="accept" class="btn btn--primary btn--lg">Accept</button>
-            <button type="submit" name="submit.Deny" value="deny" class="btn btn--danger btn--lg">Deny</button>
+            <button type="submit" name="submit.Accept" value="accept" class="btn btn--primary btn--lg">Allow access</button>
+            <button type="submit" name="submit.Deny" value="deny" class="btn btn--ghost btn--lg">Deny</button>
         </div>
     </form>
 </section>

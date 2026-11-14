@@ -1,0 +1,82 @@
+@page "{id:guid}"
+@model Aganox.IdentityServer.Pages.Admin.Applications.DetailsModel
+@using Aganox.IdentityServer.Domain.Enums
+@{
+    ViewData["Title"] = Model.Application.DisplayName;
+    ViewData["ApplicationId"] = Model.Application.Id;
+    ViewData["AdminNavActive"] = "overview";
+    ViewData["Breadcrumb"] = new List<(string, string?)>
+    {
+        ("Applications", Url.Page("Index")),
+        (Model.Application.DisplayName, null)
+    };
+    var badgeClass = Model.Application.Status switch
+    {
+        ApplicationStatus.Active => "badge--active",
+        ApplicationStatus.Pending => "badge--pending",
+        _ => "badge--inactive"
+    };
+}
+
+<partial name="_AdminBreadcrumb" />
+<partial name="_AdminAppNav" />
+
+<section class="card card--wide">
+    <div class="page-header">
+        <h1 class="page-header__title">@Model.Application.DisplayName</h1>
+        <div class="page-header__meta">
+            <code id="client-id-value">@Model.Application.ClientId</code>
+            <button type="button" class="btn btn--ghost btn--icon" data-copy="client-id-value" data-copy-label="Copy ID" title="Copy client ID">Copy ID</button>
+            <span class="badge @badgeClass">@Model.Application.Status</span>
+            <span>@Model.Application.ApplicationType</span>
+            <span>@Model.Application.Environment</span>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.Application.Description))
+    {
+        <p class="card__lead">@Model.Application.Description</p>
+    }
+
+    <div class="admin-grid admin-grid--split">
+        <div>
+            <h2 class="card__subtitle">Scopes</h2>
+            @if (Model.Application.Scopes.Count == 0)
+            {
+                <p class="text-muted">No scopes configured.</p>
+            }
+            else
+            {
+                <div class="chip-list">
+                    @foreach (var scope in Model.Application.Scopes)
+                    {
+                        <span class="chip"><code>@scope</code></span>
+                    }
+                </div>
+            }
+
+            <h2 class="card__subtitle">Redirect URIs</h2>
+            @if (Model.Application.RedirectUris.Count == 0)
+            {
+                <p class="text-muted">No redirect URIs.</p>
+            }
+            else
+            {
+                <div class="chip-list">
+                    @foreach (var uri in Model.Application.RedirectUris)
+                    {
+                        <span class="chip"><code>@uri</code></span>
+                    }
+                </div>
+            }
+        </div>
+        <aside class="action-panel">
+            <p class="action-panel__title">Next steps</p>
+            <div class="form__actions">
+                <a class="btn btn--primary btn--block" asp-page="Edit" asp-route-id="@Model.Application.Id">Edit configuration</a>
+                <a class="btn btn--secondary btn--block" asp-page="Credentials" asp-route-id="@Model.Application.Id">Manage credentials</a>
+                <a class="btn btn--ghost btn--block" asp-page="Lifecycle" asp-route-id="@Model.Application.Id">Change status</a>
+            </div>
+        </aside>
+    </div>
+</section>

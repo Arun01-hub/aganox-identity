@@ -1,8 +1,12 @@
 using Aganox.IdentityServer.Application.Abstractions;
+using Aganox.IdentityServer.Infrastructure.Cors;
+using Aganox.IdentityServer.Infrastructure.Development;
 using Aganox.IdentityServer.Infrastructure.Identity;
 using Aganox.IdentityServer.Infrastructure.OpenIddict;
 using Aganox.IdentityServer.Infrastructure.Persistence;
+using Aganox.IdentityServer.Infrastructure.Security;
 using Aganox.IdentityServer.Infrastructure.Seeding;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,8 +44,18 @@ public static class InfrastructureServiceExtensions
         services.AddIdentityServices();
         services.AddOpenIddictServices(configuration["Identity:Issuer"]);
 
-        services.AddScoped<IClientRegistrationService, ClientRegistrationService>();
+        services.AddScoped<IApplicationRepository, ApplicationRepository>();
+        services.AddScoped<IApplicationAuditWriter, ApplicationAuditWriter>();
+        services.AddScoped<IIdentityProviderProvisioner, OpenIddictApplicationProvisioner>();
+        services.AddSingleton<IClientSecretGenerator, ClientSecretGenerator>();
+        services.AddSingleton<IClientSecretHasher, ClientSecretHasher>();
+        services.AddScoped<IDevelopmentClientBootstrapper, DevelopmentClientBootstrapper>();
+        services.AddScoped<IOpenIddictLegacyImportService, OpenIddictLegacyImportService>();
         services.AddScoped<IDbSeeder, OpenIddictSeeder>();
+
+        services.AddSingleton<CorsOriginCache>();
+        services.AddSingleton<ICorsOriginCache>(provider => provider.GetRequiredService<CorsOriginCache>());
+        services.AddSingleton<ICorsPolicyProvider, DynamicSpaCorsPolicyProvider>();
 
         return services;
     }

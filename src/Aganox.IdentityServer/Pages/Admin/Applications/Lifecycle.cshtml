@@ -1,0 +1,47 @@
+@page "{id:guid}"
+@model Aganox.IdentityServer.Pages.Admin.Applications.LifecycleModel
+@using Aganox.IdentityServer.Domain.Enums
+@{
+    ViewData["Title"] = "Lifecycle";
+    ViewData["ApplicationId"] = Model.Application.Id;
+    ViewData["AdminNavActive"] = "lifecycle";
+    ViewData["Breadcrumb"] = new List<(string, string?)>
+    {
+        ("Applications", Url.Page("Index")),
+        (Model.Application.DisplayName, Url.Page("Details", new { id = Model.Application.Id })),
+        ("Lifecycle", null)
+    };
+    var badgeClass = Model.Application.Status switch
+    {
+        ApplicationStatus.Active => "badge--active",
+        ApplicationStatus.Pending => "badge--pending",
+        _ => "badge--inactive"
+    };
+}
+
+<partial name="_AdminBreadcrumb" />
+<partial name="_AdminAppNav" />
+
+<section class="card card--wide">
+    <div class="page-header">
+        <h1 class="page-header__title">Lifecycle</h1>
+        <p class="page-header__meta">Current status: <span class="badge @badgeClass">@Model.Application.Status</span></p>
+    </div>
+    <p class="card__lead">Status changes update OpenIddict permissions and token validity. Archived apps stay in the registry but cannot authenticate.</p>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert--error" role="alert">@Model.ErrorMessage</div>
+    }
+
+    <form method="post" class="form form--narrow">
+        <div class="form__group">
+            <label asp-for="TargetStatus" class="form__label">New status</label>
+            <select asp-for="TargetStatus" class="form__input" asp-items="Html.GetEnumSelectList<ApplicationStatus>()"></select>
+        </div>
+        <div class="form__actions form__actions--row">
+            <button type="submit" class="btn btn--primary">Apply change</button>
+            <a asp-page="Details" asp-route-id="@Model.Application.Id" class="btn btn--ghost">Cancel</a>
+        </div>
+    </form>
+</section>

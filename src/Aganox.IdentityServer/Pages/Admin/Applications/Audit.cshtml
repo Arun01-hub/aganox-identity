@@ -1,0 +1,57 @@
+@page "{id:guid}"
+@model Aganox.IdentityServer.Pages.Admin.Applications.AuditModel
+@{
+    ViewData["Title"] = "Audit log";
+    ViewData["ApplicationId"] = Model.Application.Id;
+    ViewData["AdminNavActive"] = "audit";
+    ViewData["Breadcrumb"] = new List<(string, string?)>
+    {
+        ("Applications", Url.Page("Index")),
+        (Model.Application.DisplayName, Url.Page("Details", new { id = Model.Application.Id })),
+        ("Audit", null)
+    };
+}
+
+<partial name="_AdminBreadcrumb" />
+<partial name="_AdminAppNav" />
+
+<section class="card card--wide">
+    <div class="page-header">
+        <h1 class="page-header__title">Audit log</h1>
+        <p class="card__lead">Administrative actions performed on this application.</p>
+    </div>
+
+    @if (Model.AuditEntries.Items.Count == 0)
+    {
+        <div class="empty-state">
+            <p class="empty-state__title">No audit entries</p>
+            <p class="empty-state__text">Changes to this application will appear here.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>When (UTC)</th>
+                        <th>Action</th>
+                        <th>Summary</th>
+                        <th>Actor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var entry in Model.AuditEntries.Items)
+                {
+                    <tr>
+                        <td>@entry.OccurredAt.ToString("u")</td>
+                        <td><span class="badge">@entry.Action</span></td>
+                        <td>@entry.Summary</td>
+                        <td>@(entry.ActorUserId ?? "—")</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

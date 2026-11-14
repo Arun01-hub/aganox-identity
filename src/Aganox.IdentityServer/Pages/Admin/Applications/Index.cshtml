@@ -1,0 +1,102 @@
+@page
+@model Aganox.IdentityServer.Pages.Admin.Applications.IndexModel
+@using Aganox.IdentityServer.Domain.Enums
+@{
+    ViewData["Title"] = "Applications";
+    ViewData["Breadcrumb"] = new List<(string, string?)>
+    {
+        ("Applications", null)
+    };
+}
+
+<partial name="_AdminBreadcrumb" />
+
+<section class="card card--wide">
+    <div class="card__header-row">
+        <div class="page-header">
+            <h1 class="page-header__title">Applications</h1>
+            <p class="card__lead">Register OAuth clients, manage redirect URIs, and control lifecycle from one place.</p>
+        </div>
+        <a class="btn btn--primary" asp-page="Create">Register application</a>
+    </div>
+
+    <form method="get" class="form form--inline">
+        <div class="form__group">
+            <label class="form__label">Status</label>
+            <select asp-for="Status" class="form__input" asp-items="Html.GetEnumSelectList<ApplicationStatus>()">
+                <option value="">All statuses</option>
+            </select>
+        </div>
+        <div class="form__group">
+            <label class="form__label">Environment</label>
+            <select asp-for="Environment" class="form__input" asp-items="Html.GetEnumSelectList<DeploymentEnvironment>()">
+                <option value="">All environments</option>
+            </select>
+        </div>
+        <div class="form__group">
+            <label class="form__label">Type</label>
+            <select asp-for="ApplicationType" class="form__input" asp-items="Html.GetEnumSelectList<ApplicationType>()">
+                <option value="">All types</option>
+            </select>
+        </div>
+        <div class="form__group">
+            <label asp-for="Search" class="form__label">Search</label>
+            <input asp-for="Search" class="form__input" placeholder="Name or client ID" />
+        </div>
+        <div class="form__group">
+            <label asp-for="IncludeArchived" class="form__checkbox">
+                <input asp-for="IncludeArchived" />
+                <span>Include archived</span>
+            </label>
+        </div>
+        <div class="form__group form__group--actions filter-bar__actions">
+            <button type="submit" class="btn btn--secondary">Apply filters</button>
+            <a asp-page="Index" class="btn btn--ghost">Reset</a>
+        </div>
+    </form>
+
+    @if (Model.Applications.Items.Count == 0)
+    {
+        <div class="empty-state">
+            <p class="empty-state__title">No applications yet</p>
+            <p class="empty-state__text">Register your first client to connect a web app, SPA, or service.</p>
+            <a class="btn btn--primary" asp-page="Create">Register application</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Application</th>
+                        <th>Client ID</th>
+                        <th>Type</th>
+                        <th>Environment</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var app in Model.Applications.Items)
+                {
+                    var badgeClass = app.Status switch
+                    {
+                        ApplicationStatus.Active => "badge--active",
+                        ApplicationStatus.Pending => "badge--pending",
+                        _ => "badge--inactive"
+                    };
+                    <tr>
+                        <td><strong>@app.DisplayName</strong></td>
+                        <td><code>@app.ClientId</code></td>
+                        <td>@app.ApplicationType</td>
+                        <td>@app.Environment</td>
+                        <td><span class="badge @badgeClass">@app.Status</span></td>
+                        <td><a class="data-table__link" asp-page="Details" asp-route-id="@app.Id">Open</a></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

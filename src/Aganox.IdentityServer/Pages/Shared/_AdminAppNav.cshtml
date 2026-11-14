@@ -1,0 +1,25 @@
+@{
+    var appId = ViewData["ApplicationId"] as Guid?;
+    var active = ViewData["AdminNavActive"] as string ?? "";
+    if (appId is null)
+    {
+        return;
+    }
+}
+<nav class="subnav" aria-label="Application sections">
+    <a class="subnav__link @(active == "overview" ? "is-active" : null)"
+       asp-page="/Admin/Applications/Details"
+       asp-route-id="@appId">Overview</a>
+    <a class="subnav__link @(active == "edit" ? "is-active" : null)"
+       asp-page="/Admin/Applications/Edit"
+       asp-route-id="@appId">Configure</a>
+    <a class="subnav__link @(active == "lifecycle" ? "is-active" : null)"
+       asp-page="/Admin/Applications/Lifecycle"
+       asp-route-id="@appId">Lifecycle</a>
+    <a class="subnav__link @(active == "credentials" ? "is-active" : null)"
+       asp-page="/Admin/Applications/Credentials"
+       asp-route-id="@appId">Credentials</a>
+    <a class="subnav__link @(active == "audit" ? "is-active" : null)"
+       asp-page="/Admin/Applications/Audit"
+       asp-route-id="@appId">Audit</a>
+</nav>

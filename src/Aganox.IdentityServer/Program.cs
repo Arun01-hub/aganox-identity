@@ -10,3 +10,5 @@ app.UseIdentityServerPipeline();
 await app.SeedIdentityDatabaseAsync();
 
 app.Run();
+
+public partial class Program;

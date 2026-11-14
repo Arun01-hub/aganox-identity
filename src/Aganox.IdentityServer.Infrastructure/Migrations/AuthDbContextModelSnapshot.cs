@@ -17,6 +17,41 @@ namespace Aganox.IdentityServer.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.9");
 
+            modelBuilder.Entity("Aganox.IdentityServer.Domain.Entities.ApplicationAuditEntry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Action")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ActorUserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DetailsJson")
+                        .HasMaxLength(8000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("OccurredAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("RegisteredApplicationId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Summary")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RegisteredApplicationId", "OccurredAt");
+
+                    b.ToTable("ApplicationAuditEntries", (string)null);
+                });
+
             modelBuilder.Entity("Aganox.IdentityServer.Domain.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -82,6 +117,175 @@ namespace Aganox.IdentityServer.Infrastructure.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Aganox.IdentityServer.Domain.Entities.ClientCredential", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsPrimary")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("RegisteredApplicationId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset?>("RevokedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RevokedByUserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SecretHash")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SecretPrefix")
+                        .HasMaxLength(8)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RegisteredApplicationId", "IsPrimary");
+
+                    b.ToTable("ClientCredentials", (string)null);
+                });
+
+            modelBuilder.Entity("Aganox.IdentityServer.Domain.Entities.RegisteredAllowedOrigin", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Origin")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("RegisteredApplicationId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RegisteredApplicationId", "Origin")
+                        .IsUnique();
+
+                    b.ToTable("RegisteredAllowedOrigins", (string)null);
+                });
+
+            modelBuilder.Entity("Aganox.IdentityServer.Domain.Entities.RegisteredApplication", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ApplicationType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ClientId")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ConsentType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(2000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Environment")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("OpenIddictApplicationId")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId")
+                        .IsUnique();
+
+                    b.HasIndex("Status", "Environment");
+
+                    b.ToTable("RegisteredApplications", (string)null);
+                });
+
+            modelBuilder.Entity("Aganox.IdentityServer.Domain.Entities.RegisteredApplicationScope", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("RegisteredApplicationId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Scope")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RegisteredApplicationId", "Scope")
+                        .IsUnique();
+
+                    b.ToTable("RegisteredApplicationScopes", (string)null);
+                });
+
+            modelBuilder.Entity("Aganox.IdentityServer.Domain.Entities.RegisteredRedirectUri", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Kind")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("RegisteredApplicationId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Uri")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RegisteredApplicationId", "Kind", "Uri")
+                        .IsUnique();
+
+                    b.ToTable("RegisteredRedirectUris", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -420,6 +624,61 @@ namespace Aganox.IdentityServer.Infrastructure.Migrations
                     b.ToTable("OpenIddictTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Aganox.IdentityServer.Domain.Entities.ApplicationAuditEntry", b =>
+                {
+                    b.HasOne("Aganox.IdentityServer.Domain.Entities.RegisteredApplication", "RegisteredApplication")
+                        .WithMany("AuditEntries")
+                        .HasForeignKey("RegisteredApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RegisteredApplication");
+                });
+
+            modelBuilder.Entity("Aganox.IdentityServer.Domain.Entities.ClientCredential", b =>
+                {
+                    b.HasOne("Aganox.IdentityServer.Domain.Entities.RegisteredApplication", "RegisteredApplication")
+                        .WithMany("Credentials")
+                        .HasForeignKey("RegisteredApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RegisteredApplication");
+                });
+
+            modelBuilder.Entity("Aganox.IdentityServer.Domain.Entities.RegisteredAllowedOrigin", b =>
+                {
+                    b.HasOne("Aganox.IdentityServer.Domain.Entities.RegisteredApplication", "RegisteredApplication")
+                        .WithMany("AllowedOrigins")
+                        .HasForeignKey("RegisteredApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RegisteredApplication");
+                });
+
+            modelBuilder.Entity("Aganox.IdentityServer.Domain.Entities.RegisteredApplicationScope", b =>
+                {
+                    b.HasOne("Aganox.IdentityServer.Domain.Entities.RegisteredApplication", "RegisteredApplication")
+                        .WithMany("Scopes")
+                        .HasForeignKey("RegisteredApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RegisteredApplication");
+                });
+
+            modelBuilder.Entity("Aganox.IdentityServer.Domain.Entities.RegisteredRedirectUri", b =>
+                {
+                    b.HasOne("Aganox.IdentityServer.Domain.Entities.RegisteredApplication", "RegisteredApplication")
+                        .WithMany("RedirectUris")
+                        .HasForeignKey("RegisteredApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RegisteredApplication");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -493,6 +752,19 @@ namespace Aganox.IdentityServer.Infrastructure.Migrations
                     b.Navigation("Application");
 
                     b.Navigation("Authorization");
+                });
+
+            modelBuilder.Entity("Aganox.IdentityServer.Domain.Entities.RegisteredApplication", b =>
+                {
+                    b.Navigation("AllowedOrigins");
+
+                    b.Navigation("AuditEntries");
+
+                    b.Navigation("Credentials");
+
+                    b.Navigation("RedirectUris");
+
+                    b.Navigation("Scopes");
                 });
 
             modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreApplication", b =>

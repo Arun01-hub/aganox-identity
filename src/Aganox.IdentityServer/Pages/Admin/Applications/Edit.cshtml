@@ -1,0 +1,83 @@
+@page "{id:guid}"
+@model Aganox.IdentityServer.Pages.Admin.Applications.EditModel
+@{
+    ViewData["Title"] = "Configure " + Model.Application.DisplayName;
+    ViewData["ApplicationId"] = Model.Application.Id;
+    ViewData["AdminNavActive"] = "edit";
+    ViewData["Breadcrumb"] = new List<(string, string?)>
+    {
+        ("Applications", Url.Page("Index")),
+        (Model.Application.DisplayName, Url.Page("Details", new { id = Model.Application.Id })),
+        ("Configure", null)
+    };
+}
+
+<partial name="_AdminBreadcrumb" />
+<partial name="_AdminAppNav" />
+
+<section class="card card--wide">
+    <div class="page-header">
+        <h1 class="page-header__title">Configure</h1>
+        <p class="card__lead">Update each area independently. Changes sync to OpenIddict when you save.</p>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert--error" role="alert">@Model.ErrorMessage</div>
+    }
+
+    <div class="form__section" id="metadata">
+        <h2 class="form__section-title">Metadata</h2>
+        <form method="post" asp-page-handler="Metadata" class="form form--compact">
+            <input type="hidden" name="id" value="@Model.Application.Id" />
+            <div class="form__group">
+                <label asp-for="Input.DisplayName" class="form__label">Display name</label>
+                <input asp-for="Input.DisplayName" class="form__input" />
+            </div>
+            <div class="form__group">
+                <label asp-for="Input.Description" class="form__label">Description</label>
+                <textarea asp-for="Input.Description" class="form__input" rows="2"></textarea>
+            </div>
+            <button type="submit" class="btn btn--primary">Save metadata</button>
+        </form>
+    </div>
+
+    <div class="form__section" id="uris">
+        <h2 class="form__section-title">Redirect URIs</h2>
+        <form method="post" asp-page-handler="Uris" class="form form--compact">
+            <div class="form__group">
+                <label asp-for="Input.RedirectUris" class="form__label">Redirect URIs</label>
+                <textarea asp-for="Input.RedirectUris" class="form__input" rows="4"></textarea>
+            </div>
+            <div class="form__group">
+                <label asp-for="Input.PostLogoutRedirectUris" class="form__label">Post-logout URIs</label>
+                <textarea asp-for="Input.PostLogoutRedirectUris" class="form__input" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn--primary">Save URIs</button>
+        </form>
+    </div>
+
+    <div class="form__section">
+        <h2 class="form__section-title">Allowed origins</h2>
+        <form method="post" asp-page-handler="Origins" class="form form--compact">
+            <div class="form__group">
+                <label asp-for="Input.AllowedOrigins" class="form__label">SPA CORS origins (one per line)</label>
+                <textarea asp-for="Input.AllowedOrigins" class="form__input" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn--primary">Save origins</button>
+        </form>
+    </div>
+
+    <div class="form__section">
+        <h2 class="form__section-title">Scopes</h2>
+        <form method="post" asp-page-handler="Scopes" class="form form--compact">
+            <div class="form__group">
+                <label asp-for="Input.Scopes" class="form__label">Scopes (one per line)</label>
+                <textarea asp-for="Input.Scopes" class="form__input" rows="5"></textarea>
+            </div>
+            <button type="submit" class="btn btn--primary">Save scopes</button>
+        </form>
+    </div>
+
+    <p class="mt-4"><a asp-page="Details" asp-route-id="@Model.Application.Id">← Back to overview</a></p>
+</section>

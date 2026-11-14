@@ -1,0 +1,107 @@
+@page
+@model Aganox.IdentityServer.Pages.Admin.Applications.CreateModel
+@using Aganox.IdentityServer.Domain.Enums
+@{
+    ViewData["Title"] = "Register application";
+    ViewData["Breadcrumb"] = new List<(string, string?)>
+    {
+        ("Applications", Url.Page("Index")),
+        ("Register", null)
+    };
+}
+
+<partial name="_AdminBreadcrumb" />
+
+<section class="card card--wide">
+    <div class="page-header">
+        <h1 class="page-header__title">Register application</h1>
+        <p class="card__lead">Complete each section in order. You can activate immediately or keep the app pending until URIs are verified.</p>
+    </div>
+
+    <ol class="flow-steps" aria-label="Registration steps">
+        <li class="flow-steps__item is-active"><span class="flow-steps__num">1</span> Identity</li>
+        <li class="flow-steps__sep" aria-hidden="true">→</li>
+        <li class="flow-steps__item"><span class="flow-steps__num">2</span> URIs &amp; CORS</li>
+        <li class="flow-steps__sep" aria-hidden="true">→</li>
+        <li class="flow-steps__item"><span class="flow-steps__num">3</span> Scopes</li>
+        <li class="flow-steps__sep" aria-hidden="true">→</li>
+        <li class="flow-steps__item"><span class="flow-steps__num">4</span> Activate</li>
+    </ol>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert--error" role="alert">@Model.ErrorMessage</div>
+    }
+
+    <form method="post" class="form">
+        <div class="form__section">
+            <h2 class="form__section-title"><span>1</span> Identity</h2>
+            <p class="form__section-hint">How this client appears in the registry and to users during consent.</p>
+            <div class="form__group">
+                <label asp-for="Input.DisplayName" class="form__label">Display name</label>
+                <input asp-for="Input.DisplayName" class="form__input" placeholder="Aganox Rental Portal" />
+            </div>
+            <div class="form__group">
+                <label asp-for="Input.Description" class="form__label">Description</label>
+                <textarea asp-for="Input.Description" class="form__input" rows="2" placeholder="Optional summary for administrators"></textarea>
+            </div>
+            <div class="form__group">
+                <label asp-for="Input.ApplicationType" class="form__label">Application type</label>
+                <select asp-for="Input.ApplicationType" class="form__input" asp-items="Html.GetEnumSelectList<ApplicationType>()"></select>
+                <span class="form__hint">SPA and web apps use authorization code; services use client credentials.</span>
+            </div>
+            <div class="form__group">
+                <label asp-for="Input.Environment" class="form__label">Environment</label>
+                <select asp-for="Input.Environment" class="form__input" asp-items="Html.GetEnumSelectList<DeploymentEnvironment>()"></select>
+            </div>
+            <div class="form__group">
+                <label asp-for="Input.Slug" class="form__label">Slug (generated client ID)</label>
+                <input asp-for="Input.Slug" class="form__input" placeholder="rental-portal" />
+            </div>
+            <div class="form__group">
+                <label asp-for="Input.ClientId" class="form__label">Explicit client ID (optional)</label>
+                <input asp-for="Input.ClientId" class="form__input" placeholder="Leave blank to auto-generate" />
+            </div>
+        </div>
+
+        <div class="form__section">
+            <h2 class="form__section-title"><span>2</span> URIs &amp; CORS</h2>
+            <p class="form__section-hint">One URI per line. Must match exactly what your app sends during OAuth.</p>
+            <div class="form__group">
+                <label asp-for="Input.RedirectUris" class="form__label">Redirect URIs</label>
+                <textarea asp-for="Input.RedirectUris" class="form__input" rows="4" placeholder="https://app.example.com/signin-oidc"></textarea>
+            </div>
+            <div class="form__group">
+                <label asp-for="Input.PostLogoutRedirectUris" class="form__label">Post-logout redirect URIs</label>
+                <textarea asp-for="Input.PostLogoutRedirectUris" class="form__input" rows="3"></textarea>
+            </div>
+            <div class="form__group">
+                <label asp-for="Input.AllowedOrigins" class="form__label">Allowed origins (SPA CORS)</label>
+                <textarea asp-for="Input.AllowedOrigins" class="form__input" rows="3" placeholder="https://app.example.com"></textarea>
+            </div>
+        </div>
+
+        <div class="form__section">
+            <h2 class="form__section-title"><span>3</span> Scopes</h2>
+            <div class="form__group">
+                <label asp-for="Input.Scopes" class="form__label">Scopes (one per line)</label>
+                <textarea asp-for="Input.Scopes" class="form__input" rows="5" placeholder="openid&#10;profile&#10;aganox.api"></textarea>
+            </div>
+        </div>
+
+        <div class="form__section">
+            <h2 class="form__section-title"><span>4</span> Activation</h2>
+            <div class="form__group">
+                <label asp-for="Input.ActivateImmediately" class="form__checkbox">
+                    <input asp-for="Input.ActivateImmediately" />
+                    <span>Activate immediately and provision in OpenIddict</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="form__actions form__actions--row">
+            <button type="submit" class="btn btn--primary btn--lg">Register application</button>
+            <a asp-page="Index" class="btn btn--secondary">Cancel</a>
+        </div>
+    </form>
+</section>

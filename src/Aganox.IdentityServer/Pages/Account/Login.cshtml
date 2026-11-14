@@ -2,14 +2,27 @@
 @model Aganox.IdentityServer.Pages.Account.LoginModel
 @{
     ViewData["Title"] = "Sign in";
+    ViewData["LayoutMode"] = "auth";
 }
 
 <section class="card" aria-labelledby="login-heading">
+    <ol class="flow-steps" aria-label="Sign-in progress">
+        <li class="flow-steps__item is-active">
+            <span class="flow-steps__num">1</span>
+            Sign in
+        </li>
+        <li class="flow-steps__sep" aria-hidden="true">→</li>
+        <li class="flow-steps__item">
+            <span class="flow-steps__num">2</span>
+            Continue to app
+        </li>
+    </ol>
+
     <div class="card__brand">
         <span class="card__logo" aria-hidden="true">A</span>
-        <h1 id="login-heading" class="card__title">Sign in to Aganox</h1>
+        <h1 id="login-heading" class="card__title">Welcome back</h1>
     </div>
-    <p class="card__lead">Enter your credentials to continue to your application.</p>
+    <p class="card__lead">Use your Aganox account to continue. Your session stays on this device when you choose “Remember me”.</p>
 
     @if (!string.IsNullOrEmpty(Model.ErrorMessage))
     {
@@ -19,22 +32,25 @@
     <form method="post" class="form">
         <div class="form__group">
             <label asp-for="Input.Email" class="form__label">Email</label>
-            <input asp-for="Input.Email" class="form__input" autocomplete="username" />
+            <input asp-for="Input.Email" class="form__input" autocomplete="username" inputmode="email" placeholder="you@company.com" />
             <span asp-validation-for="Input.Email" class="form__error"></span>
         </div>
         <div class="form__group">
             <label asp-for="Input.Password" class="form__label">Password</label>
-            <input asp-for="Input.Password" type="password" class="form__input" autocomplete="current-password" />
+            <div class="form__input-group">
+                <input asp-for="Input.Password" type="password" class="form__input" autocomplete="current-password" id="login-password" />
+                <button type="button" class="btn btn--secondary btn--icon" data-password-toggle aria-controls="login-password" aria-pressed="false">Show</button>
+            </div>
             <span asp-validation-for="Input.Password" class="form__error"></span>
         </div>
         <div class="form__group">
             <label asp-for="Input.RememberMe" class="form__checkbox">
                 <input asp-for="Input.RememberMe" />
-                Remember me
+                <span>Remember me on this device</span>
             </label>
         </div>
         <div class="form__actions">
-            <button type="submit" class="btn btn--primary btn--lg btn--block">Sign in</button>
+            <button type="submit" class="btn btn--primary btn--lg btn--block">Continue</button>
         </div>
         <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
     </form>

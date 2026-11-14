@@ -14,6 +14,7 @@ public static class WebApplicationExtensions
         app.UseHttpsRedirection();
         app.UseStaticFiles();
         app.UseRouting();
+        app.UseMiddleware<Middleware.RegisteredApplicationGateMiddleware>();
         app.UseCors("SpaClients");
         app.UseAuthentication();
         app.UseAuthorization();

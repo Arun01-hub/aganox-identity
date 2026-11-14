@@ -12,7 +12,7 @@ public static class ServiceCollectionExtensions
         services.AddControllersWithViews();
         services.AddRazorPages();
 
-        services.AddApplication();
+        services.AddApplication(configuration);
         services.AddInfrastructure(configuration);
         services.AddScoped<IUserAccountService, UserAccountService>();
 
@@ -20,20 +20,12 @@ public static class ServiceCollectionExtensions
         {
             options.AddPolicy(Domain.Constants.PolicyNames.RequireAuthenticatedUser, policy =>
                 policy.RequireAuthenticatedUser());
+
+            options.AddPolicy(Domain.Constants.PolicyNames.RequireAdministrator, policy =>
+                policy.RequireRole("Administrator"));
         });
 
-        var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
-            ?? ["http://localhost:4200"];
-        services.AddCors(options =>
-        {
-            options.AddPolicy("SpaClients", policy =>
-            {
-                policy.WithOrigins(allowedOrigins)
-                      .AllowAnyHeader()
-                      .AllowAnyMethod()
-                      .AllowCredentials();
-            });
-        });
+        services.AddCors();
 
         return services;
     }
