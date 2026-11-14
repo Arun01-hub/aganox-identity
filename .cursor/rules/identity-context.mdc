@@ -1,0 +1,11 @@
+---
+description: Aganox Identity Server repo context
+alwaysApply: true
+---
+
+# Identity Server
+
+- Issuer default: `https://localhost:7036`; metadata at `/.well-known/openid-configuration`.
+- Application Registry is separate from OpenIddict client store; map permissions in Infrastructure.
+- Dynamic CORS merges `Cors:AllowedOrigins` with active SPA registry origins.
+- SQLite in Development via `appsettings.Development.json`; production-style uses SQL Server connection string shape.

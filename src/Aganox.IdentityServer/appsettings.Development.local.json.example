@@ -1,0 +1,8 @@
+{
+  "ConnectionStrings": {
+    "IdentityDb": "Data Source=aganox-identity.db"
+  },
+  "ApplicationRegistry": {
+    "ProductionRedirectHostAllowlist": []
+  }
+}
